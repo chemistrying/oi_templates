@@ -1,0 +1,68 @@
+\subsection{Hashing}
+\begin{lstlisting}
+struct custom_hash {
+    int mod = 31;
+    int mod2 = 1000003957;
+    // 1000003957, 1000001957, 1000003469, 1000003283, 1000002431
+    // 1000010611, 1000009739, 1000009567, 1000012253, 1000011421
+    void prefixHash(vector<long long>& dest, string& s) {
+        dest.resize(s.size());
+        dest[0] = s[0] - 'a';
+
+        for (int i = 1; i < s.size(); i++) {
+            dest[i] = dest[i - 1] * mod % mod2 + (s[i] - 'a');
+            dest[i] %= mod2;
+        }
+    }
+
+    void prefixHashSize(vector<long long>& dest, string& s, int size) {
+        dest.resize(s.size());
+        dest[0] = s[0];
+
+        long long power = bigmd(mod, size, mod2);
+
+        for (int i = 1; i < s.size(); i++) {
+            dest[i] = dest[i - 1] * mod % mod2 + (s[i]);
+            
+            if (i >= size){
+                long long minus = (s[i - size]) * power % mod2;
+                dest[i] -= minus;
+            }
+
+            if (dest[i] < 0){
+                dest[i] += mod2;
+            }
+            
+            dest[i] %= mod2;
+        }
+    }
+
+    void suffixHash(vector<long long>& dest, string& s) {
+        dest.resize(s.size());
+        dest[s.size() - 1] = s[s.size() - 1] - 'a';
+        
+        for (int i = s.size() - 2; i >= 0; i--) {
+            dest[i] = dest[i + 1] * mod + (s[i] - 'a');
+            dest[i] %= mod2;
+        }
+    }
+
+    long long singlePrefixHash(string& s) {
+        long long result = s[0] - 'a';
+        for (int i = 1; i < s.size(); i++) {
+            result = result * mod + (s[i] - 'a');
+            result %= mod2;
+        }
+        return result;
+    }
+
+    long long singleSuffixHash(string& s) {
+        long long result = s[s.size() - 1] - 'a';
+        for (int i = s.size() - 2; i >= 0; i--) {
+            result = result * mod + (s[i] - 'a');
+            result %= mod2;
+        }
+        return result;
+    }
+} hasher;
+\end{lstlisting}

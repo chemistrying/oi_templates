@@ -1,0 +1,26 @@
+\subsection{Binary Exponentiation}
+Using this method, we can calculate $a^b \bmod{m}$ in $O(\log{n})$
+\linebreak
+\linebreak
+Iterative method:
+\begin{lstlisting}
+long long bigmd(long long x, long long y, long long z) {
+    long long ans = 1;
+    while (y){
+        if (y & 1) ans = ans * x % z;
+        y >>= 1;
+        x = x * x % z;
+    }
+    return ans;
+}
+\end{lstlisting}
+
+Recursive method:
+
+\begin{lstlisting}
+long long bigmd(int n, int p, int mod){
+    if (p == 0) return 1;
+    long long tt = bigmd(n, p / 2, mod);
+    return (p & 1 ? (n % mod) : 1) * (tt * tt % mod);
+}
+\end{lstlisting}

@@ -1,0 +1,115 @@
+\subsection{Graph Traversal}
+\subsubsection{Dijkstra's Algorithm}
+A single source weighted shortest path algorithm in $O(n\log n)$
+\begin{lstlisting}
+void dijkstra(vector<int>& visited, int node){
+    min_heap<pair<int, int>> pq;
+    pq.push({0, node});
+    visited[node] = 0;
+
+    while (!pq.empty()){
+        pair<int, int> curr = pq.top();
+        pq.pop();
+
+        if (curr.first > visited[curr.second]) continue;
+        
+        for (auto a : graph[curr.second]){
+            if (curr.first + a.second < visited[a.first]){
+                visited[a.first] = curr.first + a.second;
+                pq.push({curr.first + a.second, a.first});
+            }
+        }
+    }
+}
+\end{lstlisting}
+\subsubsection{Bellman-Ford Algorithm}
+A single source weighted shortest path algorithm which supports negative edges in $O(VE)$.
+\begin{lstlisting}
+vector<long long> dist(n, inf * inf);
+dist[root] = 0;
+
+for (int t = 0; t < n - 1; t++) {
+    for (int i = 0; i < n; i++) {
+        for (pair<int, int> other : graph[i]) {
+            int u = i, v = other.first;
+            if (dist[u] != inf * inf && dist[v] > dist[u] + other.second) {
+                dist[v] = dist[u] + other.second;
+            }
+        }
+    }
+}
+
+// for checking negative cycles
+for (int i = 0; i < n; i++) {
+    for (pair<int, int> other : graph[i]) {
+        int u = i, v = other.first;
+        if (dist[u] != inf * inf && dist[v] > dist[u] + other.second) {
+            cout << "NEGATIVE CYCLE\n";
+            return 0;
+        }
+    }
+}
+\end{lstlisting}
+\subsubsection{Floyd-Warshall Algorithm}
+An all pairs weighted shortest path algorithm which supports negative edges in $O(V^3)$.
+\begin{lstlisting}
+vector dist(n, vector(n, inf + inf));
+for (int i = 0; i < n; i++) {
+    dist[i][i] = 0;
+}
+
+for (int i = 0; i < m; i++) {
+    long long u, v, w;
+    cin >> u >> v >> w;
+    dist[u][v] = w;
+}
+
+for (int k = 0; k < n; k++) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (dist[i][k] != inf + inf && dist[k][j] != inf + inf) {
+                if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                }
+            }
+        }
+    }
+}
+
+// for checking negative cycles
+for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+        for (int k = 0; k < n; k++) {
+            if (dist[i][k] + dist[k][j] + dist[j][i] < 0) {
+                cout << "NEGATIVE CYCLE\n";
+                return 0;
+            }
+        }
+    }
+}
+\end{lstlisting}
+\subsubsection{0-1 BFS}
+If the weights of the edges are either 0 or 1, we do not have to use a priority queue. 
+Instead, we can use a deque. 
+When we do insertion, if the newly added edge is 0, place it in front of the deque; otherwise, place it at the back of the deque.
+\begin{lstlisting}
+vector<int> dist(n, INF);
+dist[s] = 0;
+deque<int> dq;
+dq.push_front(s);
+while (!dq.empty()) {
+    int node = dq.front();
+    dq.pop_front();
+    for (auto edge : graph[node]) {
+        int other = edge.first;
+        int weight = edge.second;
+        if (dist[other] + w < dist[node]) {
+            dust[other] = dist[node] + w;
+            if (w == 1)
+                q.push_back(other);
+            else
+                q.push_front(other);
+        }
+    }
+}
+\end{lstlisting}

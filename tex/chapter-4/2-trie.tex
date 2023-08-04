@@ -1,0 +1,54 @@
+\subsection{Trie}
+\begin{lstlisting}
+struct trie_node{
+    int children[26]; // index of the next node
+    int isWord = -1; // if it is a word
+    int cnt = 0;
+};
+
+class trie {
+    vector<trie_node> v;
+    int size = 1;
+    public:
+        trie(){
+            v.resize(1);
+        }
+
+        void insert(string& s, int idx) {
+            int currpos = 0;
+            v[currpos].cnt++;
+            for (int i = 0; i < s.size(); i++) {
+                // create a new node if it doesn't exist
+                if (v[currpos].children[s[i] - 'a'] == 0) { 
+                    v[currpos].children[s[i] - 'a'] = size++;
+                    v.push_back(trie_node());
+                }
+                currpos = v[currpos].children[s[i] - 'a'];
+                v[currpos].cnt++;
+                
+                // mark it as a word if it is the end of the loop
+                if (i == s.size() - 1) v[currpos].isWord = idx;
+            }
+        }
+
+        void remove(string& s) {
+            int currpos = 0;
+            v[currpos].cnt--;
+            for (int i = 0; i < s.size(); i++) {
+                int next = v[currpos].children[s[i] - 'a'];
+                currpos = next;
+                v[currpos].cnt--;
+            }
+        }
+
+        int traverse(string& p) {
+            int currpos = 0;
+            for (int i = 0; i < p.size(); i++) {
+                int next = v[currpos].children[p[i] - 'a'];
+                if (next == 0) return 0;
+                currpos = next;
+            }
+            return v[currpos].cnt;
+        }
+};
+\end{lstlisting}

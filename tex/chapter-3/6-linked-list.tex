@@ -1,0 +1,19 @@
+\subsection{Linked List}
+\subsubsection{Singly Linked List}
+To initiate a linked list:
+\begin{lstlisting}
+list<int> lst(5, 0)
+\end{lstlisting}
+To insert element \texttt{x} to index \texttt{idx}:
+\begin{lstlisting}
+auto it = lst.begin();
+advance(it, idx);
+lst.insert(it, x);
+\end{lstlisting}
+To erase element of index \texttt{idx};
+\begin{lstlisting}
+auto it = lst.begin();
+advance(it, idx);
+lst.erase(it);
+\end{lstlisting}
+\subsubsection{Doubly Linked List}

@@ -1,0 +1,156 @@
+\subsection{Segment Tree}
+\subsubsection{Basic Segment Tree}
+\begin{lstlisting}
+class segment_tree {
+    int _size = 0;
+    int power2size = 1;
+    vector<long long> v;
+
+    public:
+        segment_tree(int length) {
+            _size = length;
+            v.resize(4 * _size, 0); // <- you may have to change this line
+
+            length--;
+            while (length > 0) power2size <<= 1, length >>= 1;
+        }
+
+        void set(int l, int r, int pos, int idx, long long x, int p2s) {
+            if (inRange(pos, pos + 1, l, r) == 2) {
+                int mid = p2s >> 1;
+                if (r - l != 1){
+                    set(l, l + mid, pos, 2 * idx + 1, x, mid);
+                    set(l + mid, r, pos, 2 * idx + 2, x, mid);
+                    v[idx] = operation(v[2 * idx + 1], v[2 * idx + 2]);
+                } else {
+                    v[idx] = x;
+                }
+            }
+        }
+
+        void set(int pos, long long x) {
+            set(0, _size, pos, 0, x, power2size);
+        }
+
+        // current left, current right, target left, target right
+        long long ans(int l, int r, int lt, int rt, int idx, int p2s) {
+            int checker = inRange(l, r, lt, rt);
+            int mid = p2s >> 1;
+            if (checker == 0) return 0; // <- you may have to change this line
+            else if (checker == 1) return operation(ans(l, l + mid, lt, rt, 2 * idx + 1, mid), ans(l + mid, r, lt, rt, 2 * idx + 2, mid));
+            else return v[idx];
+        }
+
+        // [l, r)
+        long long ans(int l, int r) {
+            return ans(0, _size, l, r, 0, power2size);
+        }
+        
+        int size() {
+            return _size;
+        }
+        
+        friend istream& operator >> (istream& is, segment_tree& obj) {
+            for (int i = 0; i < obj.size(); i++) {
+                int x;
+                is >> x;
+                obj.set(i, x);
+            }
+            return is;
+        }
+
+    private:
+        // 0 = completely out of range, 1 = partially in range, 2 = completely in range
+        // current segment, target segment
+        int inRange(int l, int r, int lt, int rt) {
+            if (r <= lt || l >= rt) return 0;
+            else if (l >= lt && r <= rt) return 2;
+            else return 1;
+        }
+
+        long long operation(long long x, long long y) {
+            return x + y;
+        }
+};
+\end{lstlisting}
+
+\subsubsection{Online Segment with Maximum Sum}
+\begin{lstlisting}
+class segment_tree {
+    int _size = 0;
+    int power2size = 1;
+    vector<long long> v;
+    vector<long long> pref, suf, sum;
+ 
+    public:
+        segment_tree(int length) {
+            _size = length;
+            v.resize(4 * _size, 0);
+            pref.resize(4 * _size);
+            suf.resize(4 * _size);
+            sum.resize(4 * _size);
+ 
+            length--;
+            while (length > 0) power2size <<= 1, length >>= 1;
+        }
+ 
+        void set(int l, int r, int pos, int idx, long long x, int p2s) {
+            if (inRange(pos, pos + 1, l, r) == 2) {
+                int mid = p2s >> 1;
+                if (r - l != 1) {
+                    set(l, l + mid, pos, 2 * idx + 1, x, mid);
+                    set(l + mid, r, pos, 2 * idx + 2, x, mid);
+                    v[idx] = max(max(v[2 * idx + 1], v[2 * idx + 2]), suf[2 * idx + 1] + pref[2 * idx + 2]);
+                    pref[idx] = max(pref[2 * idx + 1], sum[2 * idx + 1] + pref[2 * idx + 2]);
+                    suf[idx] = max(suf[2 * idx + 2], sum[2 * idx + 2] + suf[2 * idx + 1]);
+                    sum[idx] = sum[2 * idx + 1] + sum[2 * idx + 2];
+                } else {
+                    v[idx] = max(0LL, x);
+                    pref[idx] = max(0LL, x);
+                    suf[idx] = max(0LL, x);
+                    sum[idx] = x;
+                }
+            }
+        }
+ 
+        void set(int pos, long long x) {
+            set(0, _size, pos, 0, x, power2size);
+        }
+ 
+        // current left, current right, target left, target right
+        long long ans(int l, int r, int lt, int rt, int idx, int p2s) {
+            int checker = inRange(l, r, lt, rt);
+            int mid = p2s >> 1;
+            if (checker == 0) return 0;
+            else if (checker == 1) return max(ans(l, l + mid, lt, rt, 2 * idx + 1, mid), ans(l + mid, r, lt, rt, 2 * idx + 2, mid));
+            else return v[idx];
+        }
+ 
+        // [l, r)
+        long long ans(int l, int r) {
+            return ans(0, _size, l, r, 0, power2size);
+        }
+        
+        int size() {
+            return _size;
+        }
+        
+        friend istream& operator >> (istream& is, segment_tree& obj) {
+            for (int i = 0; i < obj.size(); i++) {
+                int x;
+                is >> x;
+                obj.set(i, x);
+            }
+            return is;
+        }
+ 
+    private:
+        // 0 = completely out of range, 1 = partially in range, 2 = completely in range
+        // current segment, target segment
+        int inRange(int l, int r, int lt, int rt) {
+            if (r <= lt || l >= rt) return 0;
+            else if (l >= lt && r <= rt) return 2;
+            else return 1;
+        }
+};
+\end{lstlisting}

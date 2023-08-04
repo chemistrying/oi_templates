@@ -1,0 +1,85 @@
+\subsection{Matrix}
+Matrices can be useful in solving linear recurrences.
+\begin{lstlisting}
+struct matrix {
+    int row_size, col_size;
+    vector<vector<long long>> container;
+    matrix(int n, int m) : row_size(n), col_size(m), container(n, vector<long long>(m)) {};
+    matrix(vector<vector<long long>> mtx) : row_size(mtx.size()), col_size(mtx.size() == 0 ? 0 : mtx[0].size()), container(mtx) {};
+    
+    matrix& operator *= (const matrix& rhs) {
+        if (col_size != rhs.row_size) {
+            cerr << "This two matrices cannot be multiplied together.\n";
+            exit(EXIT_FAILURE);
+        }
+        
+        vector<vector<long long>> new_container(row_size, vector<long long>(rhs.col_size));
+        int common_side = col_size;
+        for (int i = 0; i < row_size; i++) {
+            for (int j = 0; j < rhs.col_size; j++) {
+                long long result = 0;
+                for (int k = 0; k < common_side; k++) {
+                    result += container[i][k] * rhs.container[k][j];
+                }
+                new_container[i][j] = result;
+            }
+        }
+    
+        container = new_container;
+        return *this;
+    }
+    
+    friend matrix operator * (matrix lhs, const matrix& rhs) {
+        lhs *= rhs;
+        return lhs;
+    }
+
+    matrix& operator += (const matrix& rhs) {
+        if (col_size != rhs.col_size || row_size != rhs.row_size) {
+            cerr << "This two matrices cannot be added together.\n";
+            exit(EXIT_FAILURE);
+        }
+
+        for (int i = 0; i < row_size; i++) {
+            for (int j = 0; j < col_size; i++) {
+                container[i][j] += rhs.container[i][j];
+            }
+        }
+
+        return *this;
+    }
+
+    matrix operator + (matrix lhs, const matrix& rhs) {
+        return lhs + rhs;
+    }
+    
+    matrix& operator %= (const int mod) {
+        for (int i = 0; i < row_size; i++) {
+            for (int j = 0; j < col_size; j++) {
+                container[i][j] %= mod;
+            }
+        }
+        return *this;
+    }
+    
+    friend matrix operator % (matrix lhs, const int mod) {
+        lhs %= mod;
+        return lhs;
+    }
+};
+    
+matrix power(matrix n, long long p, long long mod) {
+    matrix curr = n;
+    matrix result(vector<vector<long long>>({{1, 0}, {0, 1}}));
+    while (p > 0) {
+        if (p & 1) {
+            result *= curr;
+            result %= mod;
+        }
+        p >>= 1;
+        curr *= curr;
+        curr %= mod;
+    }
+    return result;
+}
+\end{lstlisting}

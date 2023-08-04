@@ -1,0 +1,20 @@
+\subsection{String Functions}
+
+To construct a string with a specific character of length \texttt{n}:
+\begin{lstlisting}
+string str(n, chr);
+\end{lstlisting}
+
+To obtain a substring \texttt{t} from index \texttt{i} to \texttt{j} inclusively:
+\begin{lstlisting}
+string t = s.substr(i, j - i + 1);
+\end{lstlisting}
+
+To find if a character exists in a string \texttt{str}:
+\begin{lstlisting}
+if (str.find(chr) != string::npos) {
+    cout << "Yes\n";
+} else {
+    cout << "No\n";
+}
+\end{lstlisting}

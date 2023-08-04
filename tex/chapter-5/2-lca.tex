@@ -1,0 +1,49 @@
+\subsection{Lowest Common Ancestor}
+\begin{lstlisting}
+class lowest_common_ancestor {
+    vector<vector<int>> parent;
+    vector<int> depth;
+    void dfs(vector<vector<int>>& graph, int node, int steppies) {
+        depth[node] = steppies;
+        for (auto other : graph[node]) {
+            parent[0][other] = node;
+            dfs(graph, other, steppies + 1);
+        }
+    }
+
+    public:
+        lowest_common_ancestor(int n, int root, vector<vector<int>>& graph) {
+            parent.resize(20, vector(n + 1, -1));
+            depth.resize(n + 1);
+            dfs(graph, root, 1);
+            for (int i = 1; i < 20; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (parent[i - 1][j] != -1) parent[i][j] = parent[i - 1][parent[i - 1][j]];
+                }
+            }
+        }
+
+        int lift(int node, int steppies) {
+            for (int i = 19; i >= 0; i--) {
+                if (steppies & (1 << i)) node = parent[i][node];
+            }
+            return node;
+        }
+
+        int query(int lhs, int rhs) {
+            if (depth[lhs] > depth[rhs]) swap(lhs, rhs);
+            int required_steppies = depth[rhs] - depth[lhs];
+            rhs = lift(rhs, required_steppies);
+
+            if (lhs == rhs) return lhs;
+
+            for (int i = 19; i >= 0; i--) {
+                if (parent[i][lhs] != parent[i][rhs]) {
+                    lhs = parent[i][lhs], rhs = parent[i][rhs];
+                }
+            }
+
+            return parent[0][lhs];
+        }
+};
+\end{lstlisting}

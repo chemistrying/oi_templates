@@ -1,0 +1,61 @@
+\subsection{Disjoint-set Union}
+This data structure provides the following capabilities. 
+We are given several elements, each of which is a separate set. 
+A DSU will have an operation to combine any two sets, 
+and it will be able to tell in which set a specific element is. 
+The structure is very flexible as you can add different operations to it.
+\begin{lstlisting}
+class disjoint_set_union {
+    vector<int> parent; // ancestor
+    vector<int> minn, maxx;
+    vector<int> count;
+    
+    vector<bool> config;
+    public:
+        disjoint_set_union(int length) {
+            parent.resize(length + 1);
+            iota(p.begin(), p.end(), 0);
+        }
+        
+        disjoint_set_union(int length, bool haveCount, bool haveMin, bool haveMax) {
+            p.resize(length + 1);
+            iota(parent.begin(), parent.end(), 0);
+            if (haveCount) count.resize(length + 1, 1);
+            if (haveMin) {
+                minn.resize(length + 1);
+                iota(minn.begin(), minn.end(), 0);
+            }
+            if (haveMax) {
+                maxx.resize(length + 1);
+                iota(maxx.begin(), maxx.end(), 0);
+            }
+            
+            config = {haveCount, haveMin, haveMax};
+        }
+        
+        int find(int node) {
+            return parent[node] = parent[node] == node ? node : find(parent[node]);
+        }
+        
+        void joint(int x, int y) {
+            int rootx = find(x), rooty = find(y);
+
+            if (rootx != rooty) {
+                parent[rooty] = rootx;
+                if (config.size() > 0) operation(rootx, rooty);
+            }
+        }
+        
+        tuple<int, int, int> result(int x) {
+            int root = find(x);
+            return make_tuple(minn[root], maxx[root], count[root]);
+        }
+        
+    private:
+        void operation(int x, int y) {
+            if (config[0]) count[x] += count[y];
+            if (config[1]) minn[x] = min(minn[x], minn[y]);
+            if (config[2]) maxx[x] = max(maxx[x], maxx[y]);
+        }
+};
+\end{lstlisting}

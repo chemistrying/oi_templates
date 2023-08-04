@@ -1,0 +1,59 @@
+\subsection{Bipartite Graph}
+\subsubsection{Bipartite Graph Checking}
+\begin{lstlisting}
+bool isBipartite(vector<bool>& visited, int node, vector<int>& color) {
+    visited[node] = true;
+
+    for (auto a : graph[node]) {
+        if (!visited[a]) {
+            color[a] = 1 - color[node];
+            return isBipartite(visited, a, color);
+        }else if (color[a] == color[node]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+\end{lstlisting}
+
+\subsubsection{Maximum Bipartite Matching}
+Idea: We keep finding valid augmentation to graph until we can find none.
+
+\begin{enumerate}
+    \item We start at a vertex $A$, and it connects to vertices $B_1, B_2, \cdots, B_k$.
+    \item We try to include edge $(A, B_1)$ in our maximum matching. 
+    If $B_1$ is not the endpoint of any edge in the current matching configuration, 
+    we are done.
+    \item Otherwise, B1 has been matched to some other vertex, lets say $C$. 
+    We have to find if $C$ can match to some other vertices (not $B$). 
+    Only if it is possible, we match $A$ with $B_1$.
+    \item If $A$ cannot match with $B_1$, try next connected vertex ($B_2$) and repeat from step 2, 
+    until you find one augmentation, or you declare that $A$ cannot be included.
+\end{enumerate}
+
+\begin{lstlisting}
+bool dfs(vector<bool>& visited, int node) {
+    if (visited[node]) return false;
+
+    visited[node] = true;
+    for (auto to : graph[node]) {
+        if (matching[to] == -1 || dfs(visited, matching[to])) {
+            matching[to] = cur;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int maxmatch(vector<vector<int>>& graph) {
+    int cnt = 0;
+    vector<bool> visited(graph.size());
+    for (int i = 1; i < graph.size(); i++) {
+        fill(visited.begin(), visited.end(), false);
+        cnt += dfs(i);
+    }
+    return cnt;
+}
+\end{lstlisting}

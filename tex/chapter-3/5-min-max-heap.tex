@@ -1,0 +1,8 @@
+\subsection{Min Heap / Max Heap}
+\begin{lstlisting}
+template <class T>
+using max_heap = priority_queue<T, vector<T>>;
+
+template <class T>
+using min_heap = priority_queue<T, vector<T>, greater<T>>;
+\end{lstlisting}

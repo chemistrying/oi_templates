@@ -1,0 +1,29 @@
+\subsection{Modular Inverse}
+Fermat's little theorem states that
+$$a^p \equiv a \pmod{p}$$
+where $a$ is an integer and $p$ is a prime number.
+
+The formula can be also represented as
+$$a^{p - 1} \equiv 1 \pmod{p}$$
+
+Normally, we call a number $b$ as an inverse of $a$ when $a \times b = 1$.
+
+e.g. $0.5$ is the inverse of $2$.
+\linebreak
+\linebreak
+Similarly, we call a number $b$ as the modular inverse of $a$ modulo $n$ when $a \times b \equiv 1 \pmod{n}$
+
+e.g. 4 is the inverse of 2 modulo 7. ($4 \times 2 \bmod{7} = 1$)
+\linebreak
+\linebreak
+If we recall the above formula, we can come into a conclusion that
+the modular inverse of $a \bmod{p}$ is $a^{p - 2} \bmod{p}$ (for prime number $p$ only).
+\linebreak
+\linebreak
+Code example:
+\begin{verbatim}
+// use the above bigmd function
+long long modinv(long long a, long long p){
+    return bigmd(a, p - 2, p);
+}
+\end{verbatim}
