@@ -1,1 +1,45 @@
 \subsection{Sparse Table}
+\begin{lstlisting}
+template <class T>
+class sparse_table {
+    int n, k;
+    vector<vector<T>> table;
+
+    T operation(T left, T right) {
+        return left + right;
+    }
+    
+    int log2_floor(unsigned long long i) {
+        return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1;
+    }
+    
+    void build(const vector<T>& v) {
+        // copy(v.begin(), v.end(), table[0]);
+        for (int i = 0; i < n; i++) {
+            table[0][i] = v[i];
+        }
+        for (int i = 1; i < k; i++) {
+            for (int j = 0; j + (1 << i) <= n; j++) {
+                table[i][j] = operation(table[i - 1][j], table[i - 1][j + (1 << (i - 1))]);
+            }      
+        }
+    }
+public:
+    sparse_table(const vector<T>& v) : n(v.size()), k(log2_floor(v.size()) + 1), table(k, vector<T>(v.size())) {
+        build(v);
+    }
+
+    T query(int l, int r) {
+        int size = r - l + 1;
+        T ans = 0;
+        for (int i = 0; i < k; i++) {
+            if (size & 1) {
+                ans = operation(ans, table[i][l]);
+                l += 1 << i;
+            }
+            size >>= 1;
+        }
+        return ans;
+    }
+};
+\end{lstlisting}

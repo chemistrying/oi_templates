@@ -1,24 +1,24 @@
 \subsection{Binary Indexed Tree / Fenwick Tree}
-\begin{verbatim}
-class fenwick{
+\begin{lstlisting}
+class fenwick {
     // must be one-based
     vector<long long> bit;
     int size = 0;
 
-    public:
-        binary_index_tree(int length) {
-            bit.resize(length + 1);
-            size = length + 1;
-        }
+public:
+    fenwick(int length) {
+        bit.resize(length + 1);
+        this->size = length + 1;
+    }
 
-        void update(int pos, int val) {
-            for (; pos < size; pos += pos & (-pos)) bit[pos] += val;
-        }
+    void update(int pos, int val) {
+        for (; pos < size; pos += pos & (-pos)) bit[pos] += val;
+    }
 
-        long long query(int pos) {
-            long long ans = 0;
-            for (;pos > 0; pos -= pos & (-pos)) ans += bit[pos];
-            return ans;
-        }
+    long long query(int pos) {
+        long long ans = 0;
+        for (;pos > 0; pos -= pos & (-pos)) ans += bit[pos];
+        return ans;
+    }
 };
-\end{verbatim}
+\end{lstlisting}
