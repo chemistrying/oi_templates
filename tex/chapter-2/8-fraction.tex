@@ -1,0 +1,42 @@
+\subsection{Fraction}
+\begin{lstlisting}
+template <class T>
+struct fraction{
+	T numerator, denominator;
+	fraction(T n, T d){
+		numerator = n, denominator = d;
+        simplify();
+	}
+	fraction(){
+		numerator = 0, denominator = 1;
+	}
+
+	fraction& operator += (const fraction& rhs){
+		numerator = numerator * rhs.denominator + rhs.numerator * denominator, denominator *= rhs.denominator;
+        simplify();
+		return *this;
+    }
+        
+        fraction& operator *= (const fraction& rhs){
+        numerator *= rhs.numerator, denominator *= rhs.denominator;
+        simplify();
+		return *this;
+	}
+	
+	friend fraction operator * (fraction lhs, const fraction& rhs){
+		lhs *= rhs;
+        lhs.simplify();
+		return lhs;
+	}
+
+	friend ostream& operator << (ostream& os, const fraction& obj){
+		os << obj.numerator << ' ' << obj.denominator;
+		return os;
+	}
+
+	void simplify(){
+		T ndgcd = gcd(numerator, denominator);
+		numerator /= ndgcd, denominator /= ndgcd;
+	}
+};
+\end{lstlisting}

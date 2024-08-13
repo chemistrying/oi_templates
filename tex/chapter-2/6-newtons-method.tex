@@ -1,0 +1,15 @@
+\subsection{Newton's Method}
+Note that $x_{i+1}= x_i - \frac{f(x_i)}{f\prime(x_i)}$.
+\begin{lstlisting}
+double sqrt_newton(double n) {
+    const double eps = 1E-15;
+    double x = 1;
+    for (;;) {
+        double nx = x - f(x) / f_prime(x);
+        if (abs(x - nx) < eps)
+            break;
+        x = nx;
+    }
+    return x;
+}
+\end{lstlisting}

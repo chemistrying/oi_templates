@@ -1,0 +1,33 @@
+\subsection{Lazy Min Heap}
+\begin{lstlisting}
+template <class T>
+class lazy_min_heap {
+    min_heap<T> pq, lazy;
+    
+public:
+    lazy_min_heap() {}
+    void push(T obj) {
+        pq.push(obj);
+    }
+ 
+    void pop(T obj) {
+        lazy.push(obj);
+        while (!lazy.empty() && !pq.empty() && pq.top() == lazy.top()) {
+            pq.pop();
+            lazy.pop();
+        }
+    }
+ 
+    T top() {
+        return pq.top(); 
+    }
+ 
+    bool empty() {
+        return pq.empty();
+    }
+
+    int size() {
+        return pq.size() - lazy.size();
+    }
+};
+\end{lstlisting}
